@@ -15,6 +15,7 @@ version = "0.1.0"
 dependencies = [
  "autodiff",
  "index_vec",
+ "optimization",
 ]
 
 [[package]]
@@ -22,3 +23,10 @@ name = "index_vec"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44faf5bb8861a9c72e20d3fb0fdbd59233e43056e2b80475ab0aacdc2e781355"
+
+[[package]]
+name = "optimization"
+version = "0.1.0"
+dependencies = [
+ "index_vec",
+]

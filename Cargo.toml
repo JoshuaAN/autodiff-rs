@@ -6,8 +6,10 @@ edition = "2024"
 [workspace]
 members = [
     "crates/autodiff",
+    "crates/optimization",
 ]
 
 [dependencies]
 index_vec = "0.1"
 autodiff = { path = "crates/autodiff" }
+optimization = { path = "crates/optimization" }

@@ -4,12 +4,12 @@ use super::op::{BinaryOp, UnaryOp};
 
 use index_vec::define_index_type;
 
-define_index_type! { pub struct NodeId = u32; }
+define_index_type! { pub struct ExpressionId = u32; }
 
 #[derive(Clone, Copy, Debug)]
-pub enum Node {
+pub enum Expression {
     Constant(f64),
     Variable(VarId),
-    Unary(UnaryOp, NodeId),
-    Binary(BinaryOp, NodeId, NodeId),
+    Unary(UnaryOp, ExpressionId),
+    Binary(BinaryOp, ExpressionId, ExpressionId),
 }

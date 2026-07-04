@@ -1,6 +1,11 @@
 use index_vec::IndexVec;
 
-use autodiff::{context::Context, interpreter::eval, tape::{Instr, Tape}, var::VarId};
+use autodiff::{
+    context::Context,
+    interpreter::eval,
+    tape::{Instr, Tape},
+    var::VarId,
+};
 
 use std::fmt;
 

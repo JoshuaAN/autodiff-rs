@@ -27,9 +27,9 @@ impl fmt::Display for Tape {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for (slot, inst) in self.insts.iter_enumerated() {
             match *inst {
-                Instr::Const(c)         => writeln!(f, "{:?} = const {}", slot, c)?,
-                Instr::Input(v)         => writeln!(f, "{:?} = input {:?}", slot, v)?,
-                Instr::Unary(op, a)     => writeln!(f, "{:?} = {:?} {:?}", slot, op, a)?,
+                Instr::Const(c) => writeln!(f, "{:?} = const {}", slot, c)?,
+                Instr::Input(v) => writeln!(f, "{:?} = input {:?}", slot, v)?,
+                Instr::Unary(op, a) => writeln!(f, "{:?} = {:?} {:?}", slot, op, a)?,
                 Instr::Binary(op, a, b) => writeln!(f, "{:?} = {:?} {:?} {:?}", slot, op, a, b)?,
             }
         }
