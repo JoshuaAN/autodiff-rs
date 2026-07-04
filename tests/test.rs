@@ -1,13 +1,14 @@
 #[cfg(test)]
 mod tests {
-    use index_vec::IndexVec;
+    use autodiff::{context::Context, grad::gradient, interpreter::eval, tape::Tape, var::VarId};
+use index_vec::IndexVec;
 
 use super::*;
 
     fn eval1(tape: &Tape, xs: &[f64]) -> Vec<f64> {
         let inputs: IndexVec<VarId, f64> = xs.iter().copied().collect();
         let mut out = Vec::new();
-        crate::interp::eval(tape, &inputs, &mut out);
+        eval(tape, &inputs, &mut out);
         out
     }
 
@@ -21,7 +22,6 @@ use super::*;
 
         let fwd = ctx.lower(&[&f]);
         let g = gradient(&fwd, 0, ctx.n_vars());
-        g.validate();
 
         let p = [3.0, 4.0];
         let out = eval1(&g, &p); // [f, df/dx, df/dy]

@@ -1,7 +1,13 @@
 [package]
-name = "autodiff"
+name = "autodiff-rs"
 version = "0.1.0"
 edition = "2024"
 
+[workspace]
+members = [
+    "crates/autodiff",
+]
+
 [dependencies]
 index_vec = "0.1"
+autodiff = { path = "crates/autodiff" }
