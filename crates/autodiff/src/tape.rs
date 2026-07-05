@@ -19,14 +19,14 @@ pub enum Instr {
 
 #[derive(Clone, Debug)]
 pub struct Tape {
-    pub insts: IndexVec<Slot, Instr>,
+    pub instrs: IndexVec<Slot, Instr>,
     pub outputs: Vec<Slot>,
 }
 
 impl fmt::Display for Tape {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for (slot, inst) in self.insts.iter_enumerated() {
-            match *inst {
+        for (slot, instr) in self.instrs.iter_enumerated() {
+            match *instr {
                 Instr::Const(c) => writeln!(f, "{:?} = const {}", slot, c)?,
                 Instr::Input(v) => writeln!(f, "{:?} = input {:?}", slot, v)?,
                 Instr::Unary(op, a) => writeln!(f, "{:?} = {:?} {:?}", slot, op, a)?,

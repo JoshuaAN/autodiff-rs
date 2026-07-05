@@ -6,9 +6,9 @@ use crate::{
 };
 
 pub fn eval(tape: &Tape, inputs: &IndexVec<VarId, f64>, out: &mut Vec<f64>) {
-    let mut vals: IndexVec<Slot, f64> = index_vec::index_vec![0.0; tape.insts.len()];
+    let mut vals: IndexVec<Slot, f64> = index_vec::index_vec![0.0; tape.instrs.len()];
 
-    for (slot, inst) in tape.insts.iter_enumerated() {
+    for (slot, inst) in tape.instrs.iter_enumerated() {
         vals[slot] = match inst {
             Instr::Const(c) => *c,
             Instr::Input(v) => inputs[*v],

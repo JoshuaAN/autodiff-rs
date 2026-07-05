@@ -26,7 +26,7 @@ impl Problem {
     }
 
     pub fn decision_variable(&mut self) -> Expression {
-        Expression::variable(VarId::from(0))
+        Expression::variable(VarId::from(self.decision_variables.len()))
     }
 
     pub fn minimize(&mut self, f: Expression) {
@@ -97,4 +97,3 @@ macro_rules! constraint {
         $crate::constraint!(@[] $($all)*)
     };
 }
-
