@@ -11,5 +11,6 @@ members = [
 
 [dependencies]
 index_vec = "0.1"
+nearly = "0.4.0"
 autodiff = { path = "crates/autodiff" }
 optimization = { path = "crates/optimization" }

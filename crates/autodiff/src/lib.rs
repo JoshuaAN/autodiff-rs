@@ -1,4 +1,3 @@
-pub mod context;
 pub mod grad;
 pub mod interpreter;
 pub mod jacobian;
