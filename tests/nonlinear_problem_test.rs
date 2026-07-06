@@ -1,4 +1,3 @@
-use autodiff::expression::pow;
 use nearly::assert_nearly;
 use optimization::{constraint, problem::Problem};
 
@@ -9,7 +8,7 @@ fn problem_quartic() {
   let mut x = problem.decision_variable();
   x.set_value(20.0);
 
-  problem.minimize(pow(&x, 4.0));
+  problem.minimize(&x * &x * &x * &x);
 
   problem.subject_to(constraint!(&x >= 1.0));
 

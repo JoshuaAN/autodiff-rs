@@ -6,7 +6,6 @@ pub enum UnaryOp {
     Ln,
     Sin,
     Cos,
-    Abs,
 }
 
 impl UnaryOp {
@@ -19,7 +18,6 @@ impl UnaryOp {
             UnaryOp::Ln => a.ln(),
             UnaryOp::Sin => a.sin(),
             UnaryOp::Cos => a.cos(),
-            UnaryOp::Abs => a.abs(),
         }
     }
 }
@@ -30,10 +28,6 @@ pub enum BinaryOp {
     Sub,
     Mul,
     Div,
-    Mod,
-    Min,
-    Max,
-    Pow,
 }
 
 impl BinaryOp {
@@ -44,10 +38,6 @@ impl BinaryOp {
             BinaryOp::Sub => a - b,
             BinaryOp::Mul => a * b,
             BinaryOp::Div => a / b,
-            BinaryOp::Mod => a % b,
-            BinaryOp::Min => a.min(b),
-            BinaryOp::Max => a.max(b),
-            BinaryOp::Pow => a.powf(b),
         }
     }
 }

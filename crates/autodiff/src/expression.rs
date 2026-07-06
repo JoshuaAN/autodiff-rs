@@ -39,6 +39,10 @@ impl Expression {
         &self.node
     }
 
+    pub fn as_ptr(&self) -> *const Node {
+        Rc::as_ptr(&self.node)
+    }
+
     pub fn value(&self) -> f64 {
         self.value
     }
@@ -105,16 +109,4 @@ impl std::ops::Neg for Expression {
     fn neg(self) -> Expression {
         Expression::unary(UnaryOp::Neg, self)
     }
-}
-
-pub fn pow(base: impl Into<Expression>, exponent: impl Into<Expression>) -> Expression {
-    Expression::binary(BinaryOp::Pow, base.into(), exponent.into())
-}
-
-pub fn min(base: impl Into<Expression>, exponent: impl Into<Expression>) -> Expression {
-    Expression::binary(BinaryOp::Min, base.into(), exponent.into())
-}
-
-pub fn max(base: impl Into<Expression>, exponent: impl Into<Expression>) -> Expression {
-    Expression::binary(BinaryOp::Max, base.into(), exponent.into())
 }
