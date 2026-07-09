@@ -8,6 +8,7 @@ members = [
     "crates/autodiff",
     "crates/ir",
     "crates/ir_autodiff",
+    "crates/ir_optimize",
 ]
 
 [dependencies]
@@ -16,4 +17,5 @@ nearly = "0.4.0"
 autodiff = { path = "crates/autodiff" }
 ir = { path = "crates/ir" }
 ir_autodiff = { path = "crates/ir_autodiff" }
+ir_optimize = { path = "crates/ir_optimize" }
 cc = "1"
