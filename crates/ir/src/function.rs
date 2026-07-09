@@ -2,18 +2,22 @@ use index_vec::IndexVec;
 
 use crate::{
     instruction::{Inst, InstructionData},
-    value::Value,
+    value::{Value, ValueData},
 };
 
 pub struct Function {
     /// Program instructions.
     pub insts: IndexVec<Inst, InstructionData>,
 
-    /// Program layout.
+    /// Maps values to their type and definition.
+    pub values: IndexVec<Value, ValueData>,
+
+    /// List of program instructions in order of their execution. This is the only thing
+    /// touched by DCE to avoid modifying the arena-allocated list of instructions.
     pub layout: Vec<Inst>,
 
-    /// Number of function arguments.
-    pub num_params: usize,
+    /// Function arguments.
+    pub params: Vec<Value>,
 
     /// Function return values.
     pub returns: Vec<Value>,
@@ -24,12 +28,12 @@ impl Function {
         self.insts[i]
     }
 
-    pub fn args(&self, i: Inst) -> Vec<Value> {
-        match self.insts[i] {
-            InstructionData::Constant(_) => vec![],
-            InstructionData::Unary(_, a) => vec![a],
-            InstructionData::Binary(_, a, b) => vec![a, b],
-        }
+    pub fn args(&self) -> &[Value] {
+        &self.params
+    }
+
+    pub fn args_mut(&mut self) -> &mut [Value] {
+        &mut self.params
     }
 
     pub fn layout(&self) -> &[Inst] {
