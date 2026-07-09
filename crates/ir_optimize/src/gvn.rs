@@ -1,3 +1,5 @@
-pub fn gvn(func: &mut Functon) {
+use ir::function::Function;
+
+pub fn gvn(func: &mut Function) {
   
 }

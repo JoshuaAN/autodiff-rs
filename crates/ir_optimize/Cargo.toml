@@ -5,4 +5,4 @@ edition = "2024"
 
 [dependencies]
 index_vec = "0.1"
-ir = { path = "crates/ir" }
+ir = { path = "../ir" }
