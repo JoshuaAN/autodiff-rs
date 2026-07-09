@@ -10,5 +10,14 @@ pub enum ValueData {
     Result { ty: Ty, inst: Inst },
 
     /// The value is a parameter of the function.
-    Param { ty: Ty, num: usize },
+    Param { ty: Ty, num: u16 },
+}
+
+impl ValueData {
+    pub fn ty(&self) -> Ty {
+        match self {
+            ValueData::Result { ty, inst: _ } => *ty,
+            ValueData::Param { ty, num: _ } => *ty,
+        }
+    }
 }
