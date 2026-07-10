@@ -13,7 +13,7 @@ type Tan = Option<Value>;
 
 /// Returns a function computing (returns, return tangents) from (primals, tangents),
 /// where the input is a function computing (returns) from (primals.).
-pub fn vjp(func: &Function) -> Function {
+pub fn jvp(func: &Function) -> Function {
     let n = func.num_params();
 
     // Inputs are primals and tangents.

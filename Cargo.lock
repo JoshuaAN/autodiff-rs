@@ -14,12 +14,20 @@ name = "autodiff-rs"
 version = "0.1.0"
 dependencies = [
  "autodiff",
+ "backend",
  "cc",
  "index_vec",
  "ir",
  "ir_autodiff",
  "ir_optimize",
  "nearly",
+]
+
+[[package]]
+name = "backend"
+version = "0.1.0"
+dependencies = [
+ "ir",
 ]
 
 [[package]]
