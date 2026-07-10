@@ -1,9 +1,13 @@
+use index_vec::define_index_type;
+
 const MAX_RANK: usize = 8;
+
+define_index_type! { pub struct Ty = u32; }
 
 /// Represents an array type in the program. All values are arrays in the IR, where
 /// scalars are arrays with rank zero.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
-pub struct Ty {
+pub struct TyData {
     /// Number of dimensions in the Tensor.
     rank: u8,
 
@@ -11,8 +15,8 @@ pub struct Ty {
     dims: [u32; MAX_RANK],
 }
 
-impl Ty {
-    pub const SCALAR: Ty = Ty {
+impl TyData {
+    pub const SCALAR: TyData = TyData {
         rank: 0,
         dims: [0; MAX_RANK],
     };
@@ -25,25 +29,16 @@ impl Ty {
         self.rank == 0
     }
 
-    pub fn prepend(self, n: u32) -> Ty {
-        assert!((self.rank as usize) < MAX_RANK);
-
+    pub fn prepend(self, n: u32) -> TyData {
+        assert!((self.rank as usize) < MAX_RANK, "rank overflow");
         let mut dims = [0; MAX_RANK];
         dims[0] = n;
         let r = self.rank as usize;
         dims[1..=r].copy_from_slice(&self.dims[..r]);
-        Ty {
-            rank: self.rank + 1,
-            dims,
-        }
-    }
-
-    pub fn broadcast(a: Ty, b: Ty) -> Result<Ty, String> {
-        match (a.is_scalar(), b.is_scalar()) {
-            (true, _) => Ok(b),
-            (_, true) => Ok(a),
-            _ if a == b => Ok(a),
-            _ => Err(format!("shape mismatch: {:?} vs {:?}", a.dims(), b.dims())),
-        }
+        TyData { rank: self.rank + 1, dims }
     }
 }
+
+/// A set of dimension indices, stored as a bitmask.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Default)]
+pub struct DimSet(pub u8);

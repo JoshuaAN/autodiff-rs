@@ -12,3 +12,8 @@ pub enum BinaryOp {
     Mul,
     Div,
 }
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub enum ReduceOp {
+    Sum,
+}
