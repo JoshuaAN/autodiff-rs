@@ -35,10 +35,21 @@ impl TyData {
         dims[0] = n;
         let r = self.rank as usize;
         dims[1..=r].copy_from_slice(&self.dims[..r]);
-        TyData { rank: self.rank + 1, dims }
+        TyData {
+            rank: self.rank + 1,
+            dims,
+        }
     }
 }
 
 /// A set of dimension indices, stored as a bitmask.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Default)]
 pub struct DimSet(pub u8);
+
+/// Maps source dim i to output dim map[i]. Entries past `len` are zero, so derived
+/// Eq/Hash are canonical.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct DimMap {
+    len: u8,
+    map: [u8; MAX_RANK],
+}

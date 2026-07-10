@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ir::{function::Function, instruction::InstructionData, ty::{Ty, TyData}, value::Value};
+use ir::{function::Function, instruction::InstructionData, ty::TyData, value::Value};
 
 pub fn vmap(func: &Function, in_batched: &[bool], b: u32) -> Function {
     assert_eq!(in_batched.len(), func.num_params());
@@ -41,9 +41,12 @@ pub fn vmap(func: &Function, in_batched: &[bool], b: u32) -> Function {
                     let t = out.value_ty(b_new);
                     a_new = out.broadcast_to(a_new, t);
                 }
-                (InstructionData::Binary(op, a_new, b_new), a_batched || b_batched)
+                (
+                    InstructionData::Binary(op, a_new, b_new),
+                    a_batched || b_batched,
+                )
             }
-            InstructionData::Broadcast(a, ty) => {
+            InstructionData::Broadcast(a, ty, map) => {
                 todo!("vmap not implemented for broadcast")
             }
             InstructionData::Reduce(op, a, s) => {

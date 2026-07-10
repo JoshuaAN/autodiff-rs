@@ -108,12 +108,13 @@ impl Function {
                 if ta != tb {
                     return Err(format!(
                         "binary op shape mismatch: {:?} vs {:?}",
-                        self.ty_data(ta).dims(), self.ty_data(tb).dims()
+                        self.ty_data(ta).dims(),
+                        self.ty_data(tb).dims()
                     ));
                 }
                 ta
             }
-            InstructionData::Broadcast(v, ty) => {
+            InstructionData::Broadcast(v, ty, map) => {
                 // let src = self.ty_data(self.value_ty(v));
                 // let dst = self.ty_data(ty);
                 // if map.dims().len() != src.rank() as usize {
@@ -138,7 +139,6 @@ impl Function {
             }
         })
     }
-
 
     pub fn emit(&mut self, d: InstructionData) -> Value {
         let ty = self.result_ty(&d).expect("emit: type error");

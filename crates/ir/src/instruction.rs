@@ -3,7 +3,7 @@ use index_vec::define_index_type;
 use crate::{
     bits::Bits64,
     op::{BinaryOp, ReduceOp, UnaryOp},
-    ty::{DimSet, Ty},
+    ty::{DimMap, DimSet, Ty},
     value::Value,
 };
 
@@ -21,7 +21,7 @@ pub enum InstructionData {
     Binary(BinaryOp, Value, Value),
 
     /// Broadcasts the argument to the target type using Numpy broadcasting rules.
-    Broadcast(Value, Ty),
+    Broadcast(Value, Ty, DimMap),
 
     /// Reduce over the given dimensions
     Reduce(ReduceOp, Value, DimSet),
