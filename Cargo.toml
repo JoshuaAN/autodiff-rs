@@ -5,19 +5,22 @@ edition = "2024"
 
 [workspace]
 members = [
-    "crates/autodiff",
-    "crates/ir",
-    "crates/ir_autodiff",
-    "crates/ir_optimize",
-    "crates/backend",
+    "crates/tape",
 ]
 
 [dependencies]
 index_vec = "0.1"
 nearly = "0.4.0"
-autodiff = { path = "crates/autodiff" }
-ir = { path = "crates/ir" }
-ir_autodiff = { path = "crates/ir_autodiff" }
-ir_optimize = { path = "crates/ir_optimize" }
-backend = { path = "crates/backend" }
+tape = { path = "crates/tape" }
 cc = "1"
+cranelift = "0.107"
+cranelift-jit = "0.107"
+cranelift-module = "0.107"
+cranelift-native = "0.107"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "tape_eval"
+harness = false

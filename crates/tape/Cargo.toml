@@ -1,0 +1,11 @@
+[package]
+name = "tape"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+index_vec = "0.1"
+cranelift = "0.107"
+cranelift-jit = "0.107"
+cranelift-module = "0.107"
+cranelift-native = "0.107"
