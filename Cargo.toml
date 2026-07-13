@@ -20,7 +20,3 @@ cranelift-native = "0.107"
 
 [dev-dependencies]
 criterion = "0.5"
-
-[[bench]]
-name = "tape_eval"
-harness = false
