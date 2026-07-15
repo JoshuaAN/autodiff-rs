@@ -154,7 +154,59 @@ impl Function {
     }
 
     pub fn backward(&self) -> Function {
-      todo!("Implement backward for Function")
+        todo!("Implement backward for Function")
+    }
+
+    pub fn eval_into(&self, x: &[f64], scratch: &mut [f64], out: &mut [f64]) {
+        use InstructionData as I;
+        assert_eq!(
+            x.len(),
+            self.num_params as usize,
+            "wrong number of arguments"
+        );
+        assert_eq!(
+            scratch.len(),
+            self.insts.len(),
+            "scratch buffer size mismatch"
+        );
+        assert_eq!(out.len(), self.returns.len(), "output buffer size mismatch");
+
+        for (i, inst) in self.insts.iter_enumerated() {
+            scratch[i.index()] = match *inst {
+                I::Param(p) => x[p as usize],
+                I::Constant(bits) => bits.to_f64(),
+                I::Unary(op, a) => {
+                    let a = scratch[a.index()];
+                    match op {
+                        UnaryOp::Sin => a.sin(),
+                        UnaryOp::Cos => a.cos(),
+                        UnaryOp::Neg => -a,
+                    }
+                }
+                I::Binary(op, a, b) => {
+                    let a = scratch[a.index()];
+                    let b = scratch[b.index()];
+                    match op {
+                        BinaryOp::Add => a + b,
+                        BinaryOp::Sub => a - b,
+                        BinaryOp::Mul => a * b,
+                        BinaryOp::Div => a / b,
+                    }
+                }
+            };
+        }
+
+        for (o, &r) in out.iter_mut().zip(&self.returns) {
+            *o = scratch[r.index()];
+        }
+    }
+
+    /// Convenience wrapper that allocates per call.
+    pub fn eval(&self, x: &[f64]) -> Vec<f64> {
+        let mut scratch = vec![0.0; self.insts.len()];
+        let mut out = vec![0.0; self.returns.len()];
+        self.eval_into(x, &mut scratch, &mut out);
+        out
     }
 
     #[cfg(debug_assertions)]

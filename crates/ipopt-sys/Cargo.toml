@@ -1,0 +1,8 @@
+[package]
+name = "ipopt-sys"
+version = "0.1.0"
+edition = "2024"
+links = "ipopt"
+
+[build-dependencies]
+pkg-config="0.3"
