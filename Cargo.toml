@@ -26,3 +26,10 @@ cranelift-native = "0.107"
 
 [build-dependencies]
 pkg-config = "0.3"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "cart_pole"
+harness = false

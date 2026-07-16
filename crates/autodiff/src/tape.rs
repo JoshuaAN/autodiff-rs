@@ -1,9 +1,12 @@
 use std::cell::RefCell;
 
-use index_vec::{IndexVec};
+use index_vec::IndexVec;
 
 use crate::{
-    bits::Bits64, function::Function, node::{Node, NodeId}, op::{BinaryOp, UnaryOp},
+    bits::Bits64,
+    function::Function,
+    node::{Node, NodeId},
+    op::{BinaryOp, UnaryOp},
 };
 
 #[derive(Default)]
@@ -100,6 +103,10 @@ impl<'t> Var<'t> {
 
     pub fn id(&self) -> NodeId {
         self.value
+    }
+
+    pub fn tape(&self) -> &'t Tape {
+        self.tape
     }
 }
 
