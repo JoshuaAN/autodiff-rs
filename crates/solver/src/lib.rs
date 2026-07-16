@@ -34,4 +34,6 @@ impl NlpSolver {
   pub fn maximize(&mut self, f: Var<'_>) {
     self.f = Some((-f).id())
   }
+
+  pub fn subject_to()
 }
