@@ -1,7 +1,9 @@
-use std::{any::Any, panic::{AssertUnwindSafe, catch_unwind}};
+use std::{
+    any::Any,
+    panic::{AssertUnwindSafe, catch_unwind},
+};
 
 use ipopt_sys::{UserDataPtr, ipindex, ipnumber};
-
 
 pub(crate) type ObjFn = Box<dyn FnMut(&[f64]) -> f64>;
 pub(crate) type GradFn = Box<dyn FnMut(&[f64], &mut [f64])>;

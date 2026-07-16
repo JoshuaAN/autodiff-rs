@@ -1,7 +1,4 @@
-use std::{
-    fmt::{self, Display},
-    ops::Add,
-};
+use std::fmt::{self, Display};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum UnaryOp {

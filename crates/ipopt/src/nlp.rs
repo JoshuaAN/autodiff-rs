@@ -1,9 +1,12 @@
 use std::ffi::{CString, c_char};
 
-use ipopt_sys::{self as ffi, ApplicationReturnStatus, UserDataPtr};
 use ipopt_sys::ipindex;
+use ipopt_sys::{self as ffi, ApplicationReturnStatus, UserDataPtr};
 
-use crate::bridge::{Callbacks, ConFn, GradFn, HessFn, JacFn, ObjFn, tramp_f, tramp_g, tramp_grad_f, tramp_h, tramp_jac_g};
+use crate::bridge::{
+    Callbacks, ConFn, GradFn, HessFn, JacFn, ObjFn, tramp_f, tramp_g, tramp_grad_f, tramp_h,
+    tramp_jac_g,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Status {
@@ -99,7 +102,7 @@ pub enum Error {
     /// CreateIpoptProblem failed.
     CreateFailed,
 
-    /// IPOPT rejected an option
+    /// IPOPT rejected an option.
     BadOption(String),
 }
 

@@ -27,9 +27,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3d036a3c4ab069c7b410a2ce876bd74808d2d0888a82667669f8e783a898bf1"
 
 [[package]]
+name = "autodiff"
+version = "0.1.0"
+dependencies = [
+ "cranelift",
+ "cranelift-jit",
+ "cranelift-module",
+ "cranelift-native",
+ "index_vec",
+]
+
+[[package]]
 name = "autodiff-rs"
 version = "0.1.0"
 dependencies = [
+ "autodiff",
  "cc",
  "cranelift",
  "cranelift-jit",
@@ -40,7 +52,7 @@ dependencies = [
  "ipopt-sys",
  "nearly",
  "pkg-config",
- "tape",
+ "solver",
 ]
 
 [[package]]
@@ -427,6 +439,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ed6a63f02c8539c91a8685a86f4099661ba3da017932f6ebbea6de3f0fa7c90"
 
 [[package]]
+name = "solver"
+version = "0.1.0"
+dependencies = [
+ "autodiff",
+ "ipopt",
+]
+
+[[package]]
 name = "stable_deref_trait"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -451,17 +471,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "tape"
-version = "0.1.0"
-dependencies = [
- "cranelift",
- "cranelift-jit",
- "cranelift-module",
- "cranelift-native",
- "index_vec",
 ]
 
 [[package]]

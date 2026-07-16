@@ -5,17 +5,19 @@ edition = "2024"
 
 [workspace]
 members = [
-    "crates/tape",
+    "crates/autodiff",
     "crates/ipopt-sys",
     "crates/ipopt",
+    "crates/solver",
 ]
 
 [dependencies]
 index_vec = "0.1"
 nearly = "0.4.0"
-tape = { path = "crates/tape" }
+autodiff = { path = "crates/autodiff" }
 ipopt-sys = { path = "crates/ipopt-sys" }
 ipopt = { path = "crates/ipopt" }
+solver = { path = "crates/solver" }
 cc = "1"
 cranelift = "0.107"
 cranelift-jit = "0.107"
