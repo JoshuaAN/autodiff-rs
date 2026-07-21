@@ -9,6 +9,7 @@ members = [
     "crates/ipopt-sys",
     "crates/ipopt",
     "crates/solver",
+    "crates/ad",
 ]
 
 [dependencies]
@@ -18,6 +19,7 @@ autodiff = { path = "crates/autodiff" }
 ipopt-sys = { path = "crates/ipopt-sys" }
 ipopt = { path = "crates/ipopt" }
 solver = { path = "crates/solver" }
+ad = { path = "crates/ad" }
 cc = "1"
 cranelift = "0.107"
 cranelift-jit = "0.107"

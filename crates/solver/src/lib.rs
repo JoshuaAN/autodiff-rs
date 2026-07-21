@@ -60,7 +60,7 @@ impl NlpSolver {
     }
 
     pub fn solve(self) -> Result<Solution, SolveError> {
-      todo!("implement solve")
+        todo!("implement solve")
     }
 }
 
@@ -174,14 +174,19 @@ pub enum ConstraintErrorKind {
 
 pub struct Solution {
     pub x: Vec<f64>,
+    var_index: HashMap<NodeId, usize>,
+    success: bool,
 }
 
 impl Solution {
-  pub fn is_success(&self) -> bool {
-    todo!("implement is_success")
-  }
+    pub fn is_success(&self) -> bool {
+        self.success
+    }
 
-  pub fn value(&self, v: NodeId) -> f64 {
-    todo!("implement solution value")
-  }
+    pub fn value(&self, v: NodeId) -> f64 {
+        self.x[*self
+            .var_index
+            .get(&v)
+            .expect("value(): not a decision variable of this problem")]
+    }
 }

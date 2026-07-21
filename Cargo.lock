@@ -3,6 +3,13 @@
 version = 4
 
 [[package]]
+name = "ad"
+version = "0.1.0"
+dependencies = [
+ "index_vec",
+]
+
+[[package]]
 name = "ahash"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -68,6 +75,7 @@ dependencies = [
 name = "autodiff-rs"
 version = "0.1.0"
 dependencies = [
+ "ad",
  "autodiff",
  "cc",
  "cranelift",

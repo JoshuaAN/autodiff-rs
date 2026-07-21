@@ -7,6 +7,7 @@ use crate::{
 
 define_index_type! { pub struct NodeId = u32; }
 
+#[derive(Clone, Copy)]
 pub enum Node {
     /// Function parameter.
     Param(u32),
