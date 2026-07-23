@@ -98,15 +98,75 @@ impl Function {
         self.outputs.len()
     }
 
+    fn input_nonzero_offsets(&self) -> Vec<usize> {
+        let mut offsets = Vec::with_capacity(self.num_inputs() + 1);
+        let mut sum = 0;
+        offsets.push(0);
+        for s in &self.sparsity_in {
+            sum += s.nnz();
+            offsets.push(sum);
+        }
+        offsets
+    }
+
+    /// Computes the global sparsity pattern of the Jacobian for the nonzero output
+    /// variables with respect to the nonzero input variables.
+    ///
+    /// The nonzero inputs and outputs are flattened in column major and concatenated.
+    pub fn jacobian_sparsity(&self) -> Sparsity {
+        let num_rows = self.outputs.iter().map(|o| o.sparsity.nnz()).sum();
+        let num_cols = self.sparsity_in.iter().map(|s| s.nnz()).sum();
+        let mut columns: Vec<Vec<u32>> = vec![Vec::new(); num_cols];
+        let col_offsets = self.input_nonzero_offsets();
+
+        let mut dep: IndexVec<Value, u64> = IndexVec::with_capacity(self.tape.len());
+        dep.resize(self.tape.len(), 0);
+
+        for block in (0..num_cols).step_by(64) {
+            for (value, data) in self.tape.iter_enumerated() {
+                let b = match *data {
+                    ValueData::Constant(..) => 0u64,
+                    ValueData::Input { input, nonzero } => {
+                        let j = col_offsets[input as usize] + nonzero as usize;
+                        if block <= j && j < block + 64 {
+                            1u64 << (j - block)
+                        } else {
+                            0u64
+                        }
+                    }
+                    ValueData::Unary(.., v) => dep[v],
+                    ValueData::Binary(.., lhs, rhs) => dep[lhs] | dep[rhs],
+                };
+                dep[value] = b;
+            }
+            let mut row = 0u32;
+            for out in &self.outputs {
+                for &v in &out.values {
+                    let mut bits = dep[v];
+                    while bits != 0 {
+                        let bit = bits.trailing_zeros() as usize;
+                        columns[block + bit].push(row);
+                        bits &= bits - 1 // Clears lowest nonzero bit.
+                    }
+                    row += 1;
+                }
+            }
+        }
+
+        Sparsity::from_columns(num_rows, num_cols, columns)
+    }
+
+    /// Computes the gradient of a scalar output function using a single sweep of reverse
+    /// mode automatic differentation.
     pub fn gradient(&self) -> Function {
         assert_eq!(
-            self.num_inputs(),
+            self.num_outputs(),
             1,
             "Function must only have one output to compute
         gradient"
         );
         assert_eq!(
-            self.sparsity_in[0].nnz(),
+            self.outputs[0].sparsity.nnz(),
             1,
             "Gradient is only defined for scalar
         outputs"
@@ -117,7 +177,7 @@ impl Function {
 
         let one = b.constant(1.0);
         let seeds = vec![vec![Some(one)]];
-        let adjoints = self.reverse(&mut b, map, &seeds);
+        let adjoints = self.reverse(&mut b, &map, &seeds);
 
         let outputs = adjoints
             .into_iter()
@@ -139,6 +199,10 @@ impl Function {
     /// Computes the Jacobian using forward mode automatic differentation (one sweep per
     /// input variable).
     pub fn jacobian_forward(&self) -> Function {
+        let mut b = FunctionBuilder::new(self.sparsity_in.clone());
+        let map = b.replay(self);
+        let one = b.constant(1.0);
+
         todo!("Implement Function::jacobian_forward")
     }
 
@@ -156,10 +220,44 @@ impl Function {
     fn forward(
         &self,
         b: &mut FunctionBuilder,
-        map: IndexVec<Value, Value>,
+        map: &IndexVec<Value, Value>,
         seeds: &[Vec<Option<Value>>],
     ) -> Vec<Vec<Option<Value>>> {
-        todo!("Implement function::forward")
+        assert_eq!(seeds.len(), self.num_inputs());
+        for (i, s) in seeds.iter().enumerate() {
+            assert_eq!(s.len(), self.sparsity_in[i].nnz())
+        }
+
+        let mut tangent: IndexVec<Value, Option<Value>> = IndexVec::with_capacity(self.tape.len());
+
+        for (old, data) in self.tape.iter_enumerated() {
+            let t = match *data {
+                ValueData::Input { input, nonzero } => seeds[input as usize][nonzero as usize],
+                ValueData::Constant(x) => None,
+                ValueData::Unary(op, x) => match tangent[x] {
+                    Some(dx) => Some(chain_unary(b, op, map[x], map[old], dx)),
+                    None => None,
+                },
+                ValueData::Binary(op, lhs, rhs) => {
+                    let (l, r, v) = (map[lhs], map[rhs], map[old]);
+                    let l_dot = match tangent[lhs] {
+                        Some(s) => Some(chain_binary_lhs(b, op, l, r, v, s)),
+                        None => None,
+                    };
+                    let r_dot = match tangent[rhs] {
+                        Some(s) => Some(chain_binary_rhs(b, op, l, r, v, s)),
+                        None => None,
+                    };
+                    b.add_opt(l_dot, r_dot)
+                }
+            };
+            tangent.push(t);
+        }
+
+        self.outputs
+            .iter()
+            .map(|output| output.values.iter().map(|v| tangent[*v]).collect())
+            .collect()
     }
 
     /// The reverse mode autodiff primitive which gradient, Jacobian, and Hessian
@@ -170,7 +268,7 @@ impl Function {
     fn reverse(
         &self,
         b: &mut FunctionBuilder,
-        map: IndexVec<Value, Value>,
+        map: &IndexVec<Value, Value>,
         seeds: &[Vec<Option<Value>>],
     ) -> Vec<Vec<Option<Value>>> {
         todo!("Implement function::forward")
@@ -223,7 +321,7 @@ fn chain_unary(b: &mut FunctionBuilder, op: UnaryOp, x: Value, y: Value, s: Valu
             b.div(s, ty)
         }
         UnaryOp::Exp => b.mul(s, y),
-        UnaryOp::Log => b.div(s, y),
+        UnaryOp::Log => b.div(s, x),
     }
 }
 
@@ -318,6 +416,15 @@ impl FunctionBuilder {
 
     pub fn cos(&mut self, v: Value) -> Value {
         self.unary(UnaryOp::Cos, v)
+    }
+
+    pub fn add_opt(&mut self, lhs: Option<Value>, rhs: Option<Value>) -> Option<Value> {
+        match (lhs, rhs) {
+            (Some(l), Some(r)) => Some(self.add(l, r)),
+            (None, Some(r)) => Some(r),
+            (Some(l), None) => Some(l),
+            (None, None) => None,
+        }
     }
 
     pub fn replay(&mut self, f: &Function) -> IndexVec<Value, Value> {
